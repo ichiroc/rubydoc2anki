@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 require 'mechanize'
 require 'csv'
 
 class RubyDocToAnkiConverter
   def initialize(path)
-    @cat = ''
     @path = path
     @data = []
   end
@@ -29,6 +29,8 @@ class RubyDocToAnkiConverter
   def parse_body body
     body.children.each do |e|
       case e.name
+      when 'h1'
+        @class = e.text.gsub(/^class /, '')
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
@@ -46,6 +48,7 @@ class RubyDocToAnkiConverter
       when 'dd'
         if d.text.strip != ''
           @data << {
+            class: @class,
             cat: @cat,
             exp: exp.join("<br>"),
             def: d.inner_html.strip
@@ -59,7 +62,7 @@ class RubyDocToAnkiConverter
   def write_out
     CSV.open(@path, 'w') do |csv|
       @data.each do |d|
-        csv << [ d[:cat], d[:exp], d[:def] ]
+        csv << [ d[:cat], d[:class], d[:exp], d[:def] ]
       end
     end
   end
