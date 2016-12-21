@@ -19,7 +19,7 @@ class RubyDocToAnkiConverter
   def retrive_doc_data
     index_page = mech.get('https://docs.ruby-lang.org/ja/latest/library/_builtin.html')
     index_page.css('td.signature>a').each do |a|
-      puts a.text
+      puts "  #{a.text}"
       page = mech.get(a[:href])
       parse_page(page)
     end
