@@ -34,7 +34,7 @@ class RubyDocToAnkiConverter
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
-        parse_dl e
+        parse_dl e unless ['目次', '要約'].include? @cat
       end
     end
   end
