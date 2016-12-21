@@ -41,13 +41,17 @@ class RubyDocToAnkiConverter
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
-        parse_dl e if %w(特異メソッド
-                         インスタンスメソッド
-                         privateメソッド
-                         モジュール関数
-                         特殊変数).include? @cat
+        parse_dl e if whitelist.include? @cat
       end
     end
+  end
+
+  def whitelist
+    %w(特異メソッド
+      インスタンスメソッド
+      privateメソッド
+      モジュール関数
+      特殊変数)
   end
 
   def parse_dl(dl)
