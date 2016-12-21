@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# frozen_string_literal: true
 require 'mechanize'
 require 'csv'
 require 'uri'
@@ -26,13 +27,13 @@ class RubyDocToAnkiConverter
     end
   end
 
-  def parse_page page
+  def parse_page(page)
     page.css('body').each do |body|
       parse_body body
     end
   end
 
-  def parse_body body
+  def parse_body(body)
     body.children.each do |e|
       case e.name
       when 'h1'
@@ -40,16 +41,16 @@ class RubyDocToAnkiConverter
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
-        parse_dl e if ['特異メソッド',
-                       'インスタンスメソッド',
-                       'privateメソッド',
-                       'モジュール関数',
-                       '特殊変数'].include? @cat
+        parse_dl e if %w(特異メソッド
+                         インスタンスメソッド
+                         privateメソッド
+                         モジュール関数
+                         特殊変数).include? @cat
       end
     end
   end
 
-  def parse_dl dl
+  def parse_dl(dl)
     exp = []
     id = ''
     dl.children.each do |d|
@@ -60,13 +61,13 @@ class RubyDocToAnkiConverter
         id = absolute_uri(permalink[:href]) if permalink
       when 'dd'
         if d.text.strip != ''
-          d.css('a').each{ |a| a[:href] = absolute_uri(a[:href]) }
+          d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
           @data << {
             id: id,
             class: @class,
             type: @type,
             cat: @cat,
-            exp: exp.join("<br>"),
+            exp: exp.join('<br>'),
             def: d.inner_html.strip
           }
           exp = []
@@ -82,12 +83,12 @@ class RubyDocToAnkiConverter
   def write_out
     CSV.open(@path, 'w') do |csv|
       @data.each do |d|
-        csv << [ d[:id], d[:type], d[:class], d[:cat] , d[:exp], d[:def] ]
+        csv << [d[:id], d[:type], d[:class], d[:cat], d[:exp], d[:def]]
       end
     end
   end
 
   def mech
-    @_mech = @_mech || Mechanize.new
+    @_mech ||= Mechanize.new
   end
 end
