@@ -52,7 +52,7 @@ class RubyDocToAnkiConverter
         exp << d.css('code').inner_html.strip
       when 'dd'
         if d.text.strip != ''
-          d.css('a').each{ a[:href] = URI.join(mech.uri, a[:href]) }
+          d.css('a').each{ |a| a[:href] = URI.join(mech.page.uri, a[:href]) }
           @data << {
             class: @class,
             type: @type,
