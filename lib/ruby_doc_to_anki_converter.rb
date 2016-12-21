@@ -47,15 +47,18 @@ class RubyDocToAnkiConverter
 
   def parse_dl dl
     exp = []
+    id = ''
     dl.children.each do |d|
       case d.name
       when 'dt'
         exp << d.css('code').inner_html.strip
+        permalink = d.at('a[text()="permalink"]')
+        id = absolute_uri(permalink[:href]) if permalink
       when 'dd'
         if d.text.strip != ''
-          d.css('a').each{ |a| a[:href] = URI.join(mech.page.uri, a[:href]) }
+          d.css('a').each{ |a| a[:href] = absolute_uri(a[:href]) }
           @data << {
-            id: Digest::MD5.hexdigest("#{@type}-#{@class}-#{@cat}-#{exp.join}"),
+            id: id,
             class: @class,
             type: @type,
             cat: @cat,
@@ -66,6 +69,10 @@ class RubyDocToAnkiConverter
         end
       end
     end
+  end
+
+  def absolute_uri(uri)
+    URI.join(mech.page.uri, uri)
   end
 
   def write_out
