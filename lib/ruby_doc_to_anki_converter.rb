@@ -34,7 +34,7 @@ class RubyDocToAnkiConverter
     body.children.each do |e|
       case e.name
       when 'h1'
-        @class = e.text
+        @type, @class = e.text.split(' ')
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
@@ -53,6 +53,7 @@ class RubyDocToAnkiConverter
         if d.text.strip != ''
           @data << {
             class: @class,
+            type: @type,
             cat: @cat,
             exp: exp.join("<br>"),
             def: d.inner_html.strip
@@ -66,7 +67,7 @@ class RubyDocToAnkiConverter
   def write_out
     CSV.open(@path, 'w') do |csv|
       @data.each do |d|
-        csv << [ d[:class], d[:cat] , d[:exp], d[:def] ]
+        csv << [ d[:type], d[:class], d[:cat] , d[:exp], d[:def] ]
       end
     end
   end
