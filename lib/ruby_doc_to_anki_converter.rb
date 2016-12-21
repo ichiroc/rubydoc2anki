@@ -2,6 +2,7 @@
 require 'mechanize'
 require 'csv'
 require 'uri'
+require 'digest/md5'
 
 class RubyDocToAnkiConverter
   def initialize(path)
@@ -54,6 +55,7 @@ class RubyDocToAnkiConverter
         if d.text.strip != ''
           d.css('a').each{ |a| a[:href] = URI.join(mech.page.uri, a[:href]) }
           @data << {
+            id: Digest::MD5.hexdigest("#{@type}-#{@class}-#{@cat}-#{exp.join}"),
             class: @class,
             type: @type,
             cat: @cat,
@@ -69,7 +71,7 @@ class RubyDocToAnkiConverter
   def write_out
     CSV.open(@path, 'w') do |csv|
       @data.each do |d|
-        csv << [ d[:type], d[:class], d[:cat] , d[:exp], d[:def] ]
+        csv << [ d[:id], d[:type], d[:class], d[:cat] , d[:exp], d[:def] ]
       end
     end
   end
