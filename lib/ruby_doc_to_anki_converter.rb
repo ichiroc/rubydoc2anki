@@ -16,8 +16,12 @@ class RubyDocToAnkiConverter
   private
 
   def retrive_doc_data
-    page = mech.get('https://docs.ruby-lang.org/ja/latest/class/Array.html')
-    parse_page(page)
+    index_page = mech.get('https://docs.ruby-lang.org/ja/latest/library/_builtin.html')
+    index_page.css('td.signature>a').each do |a|
+      puts a.text
+      page = mech.get(a[:href])
+      parse_page(page)
+    end
   end
 
   def parse_page page
@@ -62,7 +66,7 @@ class RubyDocToAnkiConverter
   def write_out
     CSV.open(@path, 'w') do |csv|
       @data.each do |d|
-        csv << [ d[:cat], d[:class], d[:exp], d[:def] ]
+        csv << [ d[:class], d[:cat] , d[:exp], d[:def] ]
       end
     end
   end
