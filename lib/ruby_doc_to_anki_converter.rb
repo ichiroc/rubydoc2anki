@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'mechanize'
 require 'csv'
+require 'uri'
 
 class RubyDocToAnkiConverter
   def initialize(path)
@@ -51,6 +52,7 @@ class RubyDocToAnkiConverter
         exp << d.css('code').inner_html.strip
       when 'dd'
         if d.text.strip != ''
+          d.css('a').each{ a[:href] = URI.join(mech.uri, a[:href]) }
           @data << {
             class: @class,
             type: @type,
