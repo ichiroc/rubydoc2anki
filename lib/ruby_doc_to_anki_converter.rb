@@ -34,7 +34,7 @@ class RubyDocToAnkiConverter
     body.children.each do |e|
       case e.name
       when 'h1'
-        @class = e.text.gsub(/^class /, '')
+        @class = e.text
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
