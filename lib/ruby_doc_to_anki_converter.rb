@@ -4,11 +4,12 @@ require 'mechanize'
 require 'csv'
 require 'uri'
 require 'digest/md5'
+require_relative 'ruby_doc'
 
 class RubyDocToAnkiConverter
   def initialize(path)
     @path = path
-    @data = []
+    @docs = []
   end
 
   def run
@@ -54,26 +55,18 @@ class RubyDocToAnkiConverter
   end
 
   def parse_dl(dl)
-    exp = []
-    id = ''
+    doc = RubyDoc.new(type: @type, class_name: @class, category: @cat, expressions: [])
     dl.children.each do |d|
+      d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
       case d.name
       when 'dt'
-        exp << d.css('code').inner_html.strip
+        doc.expressions << d.css('code').inner_html.strip
         permalink = d.at('a[text()="permalink"]')
-        id = absolute_uri(permalink[:href]) if permalink
+        doc.uri = permalink[:href] if permalink
       when 'dd'
         if d.text.strip != ''
-          d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
-          @data << {
-            id: id,
-            class: @class,
-            type: @type,
-            cat: @cat,
-            exp: exp.join('<br>'),
-            def: d.inner_html.strip
-          }
-          exp = []
+          doc.description = d.inner_html.strip
+          @docs << doc
         end
       end
     end
@@ -85,8 +78,8 @@ class RubyDocToAnkiConverter
 
   def write_out
     CSV.open(@path, 'w') do |csv|
-      @data.each do |d|
-        csv << [d[:id], d[:type], d[:class], d[:cat], d[:exp], d[:def]]
+      @docs.each do |d|
+        csv << d.to_a
       end
     end
   end
@@ -94,4 +87,5 @@ class RubyDocToAnkiConverter
   def mech
     @_mech ||= Mechanize.new
   end
+
 end
