@@ -38,7 +38,7 @@ class RubyDocToAnkiConverter
   end
 
   def extract_docs(page)
-    member_docs = []
+    docs = []
     class_type, class_name, member_type = ''
     page.at_css('body').children.each do |e|
       case e.name
@@ -47,10 +47,10 @@ class RubyDocToAnkiConverter
       when 'h2'
         member_type = e.inner_html.strip
       when 'dl'
-        member_docs += extract_member_docs(class_type, class_name, member_type, e) if whitelist.include? member_type
+        docs += extract_member_docs(class_type, class_name, member_type, e) if whitelist.include? member_type
       end
     end
-    member_docs
+    docs
   end
 
   def extract_member_docs(class_type, class_name, member_type, dl)
