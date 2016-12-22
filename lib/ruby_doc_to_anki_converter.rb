@@ -9,26 +9,28 @@ require_relative 'ruby_doc'
 class RubyDocToAnkiConverter
   def initialize(path)
     @path = path
-    @docs = []
   end
 
   def run
-    retrive_doc_data
-    write_out
+    docs = retrive_doc_data
+    write_out docs
   end
 
   private
 
   def retrive_doc_data
+    all_docs = []
     index_page = mech.get('https://docs.ruby-lang.org/ja/latest/library/_builtin.html')
     index_page.css('td.signature>a').each do |a|
       puts "  #{a.text}"
       page = mech.get(a[:href])
-      parse_page(page)
+      all_docs += parse_page(page)
     end
+    all_docs
   end
 
   def parse_page(page)
+    member_docs = []
     page.at_css('body').children.each do |e|
       case e.name
       when 'h1'
@@ -36,9 +38,10 @@ class RubyDocToAnkiConverter
       when 'h2'
         @cat = e.inner_html.strip
       when 'dl'
-        parse_dl e if whitelist.include? @cat
+        member_docs = parse_dl e if whitelist.include? @cat
       end
     end
+    member_docs
   end
 
   def whitelist
@@ -50,6 +53,7 @@ class RubyDocToAnkiConverter
   end
 
   def parse_dl(dl)
+    docs = []
     doc = RubyDoc.new(type: @type, class_name: @class, category: @cat, expressions: [])
     dl.children.each do |d|
       d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
@@ -61,19 +65,20 @@ class RubyDocToAnkiConverter
       when 'dd'
         if d.text.strip != ''
           doc.description = d.inner_html.strip
-          @docs << doc
+          docs << doc
         end
       end
     end
+    docs
   end
 
   def absolute_uri(uri)
     URI.join(mech.page.uri, uri)
   end
 
-  def write_out
+  def write_out docs
     CSV.open(@path, 'w') do |csv|
-      @docs.each do |d|
+      docs.each do |d|
         csv << d.to_a
       end
     end
