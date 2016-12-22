@@ -47,10 +47,10 @@ class RubyDocToAnkiConverter
 
   def whitelist
     %w(特異メソッド
-      インスタンスメソッド
-      privateメソッド
-      モジュール関数
-      特殊変数)
+       インスタンスメソッド
+       privateメソッド
+       モジュール関数
+       特殊変数)
   end
 
   def parse_dl(dl)
