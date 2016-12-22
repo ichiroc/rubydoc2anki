@@ -18,6 +18,14 @@ class RubyDocToAnkiConverter
 
   private
 
+  def write_out(docs)
+    CSV.open(@path, 'w') do |csv|
+      docs.each do |d|
+        csv << d.to_a
+      end
+    end
+  end
+
   def retrive_doc_data
     all_docs = []
     index_page = mech.get('https://docs.ruby-lang.org/ja/latest/library/_builtin.html')
@@ -45,14 +53,6 @@ class RubyDocToAnkiConverter
     member_docs
   end
 
-  def whitelist
-    %w(特異メソッド
-       インスタンスメソッド
-       privateメソッド
-       モジュール関数
-       特殊変数)
-  end
-
   def build_member_docs(type, class_name, category, dl)
     docs = []
     doc = RubyDoc.new(type: type, class_name: class_name, category: category, expressions: [])
@@ -77,12 +77,12 @@ class RubyDocToAnkiConverter
     URI.join(mech.page.uri, uri)
   end
 
-  def write_out(docs)
-    CSV.open(@path, 'w') do |csv|
-      docs.each do |d|
-        csv << d.to_a
-      end
-    end
+  def whitelist
+    %w(特異メソッド
+       インスタンスメソッド
+       privateメソッド
+       モジュール関数
+       特殊変数)
   end
 
   def mech
