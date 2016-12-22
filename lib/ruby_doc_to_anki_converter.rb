@@ -39,23 +39,23 @@ class RubyDocToAnkiConverter
 
   def extract_docs(page)
     member_docs = []
-    type, class_name, category = ''
+    class_type, class_name, member_type = ''
     page.at_css('body').children.each do |e|
       case e.name
       when 'h1'
-        type, class_name = e.text.split(' ')
+        class_type, class_name = e.text.split(' ')
       when 'h2'
-        category = e.inner_html.strip
+        member_type = e.inner_html.strip
       when 'dl'
-        member_docs += extract_member_docs(type, class_name, category, e) if whitelist.include? category
+        member_docs += extract_member_docs(class_type, class_name, member_type, e) if whitelist.include? member_type
       end
     end
     member_docs
   end
 
-  def extract_member_docs(type, class_name, category, dl)
+  def extract_member_docs(class_type, class_name, member_type, dl)
     docs = []
-    doc = RubyDoc.new(type: type, class_name: class_name, category: category, expressions: [])
+    doc = RubyDoc.new(class_type: class_type, class_name: class_name, member_type: member_type, expressions: [])
     dl.children.each do |d|
       d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
       case d.name
