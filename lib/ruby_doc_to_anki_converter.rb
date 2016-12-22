@@ -28,9 +28,8 @@ class RubyDocToAnkiConverter
   end
 
   def parse_page(page)
-    page.css('body').each do |body|
-      parse_body body
-    end
+    body = page.at_css('body')
+    parse_body body
   end
 
   def parse_body(body)
