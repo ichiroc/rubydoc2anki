@@ -31,9 +31,7 @@ class RubyDocToAnkiConverter
 
   def parse_page(page)
     member_docs = []
-    type        = ''
-    class_name  = ''
-    category    = ''
+    type, class_name, category = ''
     page.at_css('body').children.each do |e|
       case e.name
       when 'h1'

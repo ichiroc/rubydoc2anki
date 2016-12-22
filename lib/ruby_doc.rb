@@ -12,4 +12,5 @@ class RubyDoc
   def to_a
     [@uri, @type, @class_name, @category, @expressions.join('<br>'), @description]
   end
+
 end
