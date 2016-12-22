@@ -32,12 +32,12 @@ class RubyDocToAnkiConverter
     index_page.css('td.signature>a').each do |a|
       puts "  #{a.text}"
       page = mech.get(a[:href])
-      all_docs += parse_page(page)
+      all_docs += extract_docs(page)
     end
     all_docs
   end
 
-  def parse_page(page)
+  def extract_docs(page)
     member_docs = []
     type, class_name, category = ''
     page.at_css('body').children.each do |e|
@@ -47,13 +47,13 @@ class RubyDocToAnkiConverter
       when 'h2'
         category = e.inner_html.strip
       when 'dl'
-        member_docs += build_member_docs(type, class_name, category, e) if whitelist.include? category
+        member_docs += extract_member_docs(type, class_name, category, e) if whitelist.include? category
       end
     end
     member_docs
   end
 
-  def build_member_docs(type, class_name, category, dl)
+  def extract_member_docs(type, class_name, category, dl)
     docs = []
     doc = RubyDoc.new(type: type, class_name: class_name, category: category, expressions: [])
     dl.children.each do |d|
