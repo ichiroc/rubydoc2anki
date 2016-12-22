@@ -29,12 +29,7 @@ class RubyDocToAnkiConverter
   end
 
   def parse_page(page)
-    body = page.at_css('body')
-    parse_body body
-  end
-
-  def parse_body(body)
-    body.children.each do |e|
+    page.at_css('body').children.each do |e|
       case e.name
       when 'h1'
         @type, @class = e.text.split(' ')
