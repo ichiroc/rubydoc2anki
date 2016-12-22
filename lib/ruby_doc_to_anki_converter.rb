@@ -31,14 +31,17 @@ class RubyDocToAnkiConverter
 
   def parse_page(page)
     member_docs = []
+    type        = ''
+    class_name  = ''
+    category    = ''
     page.at_css('body').children.each do |e|
       case e.name
       when 'h1'
-        @type, @class = e.text.split(' ')
+        type, class_name = e.text.split(' ')
       when 'h2'
-        @cat = e.inner_html.strip
+        category = e.inner_html.strip
       when 'dl'
-        member_docs = parse_dl e if whitelist.include? @cat
+        member_docs += build_member_docs(type, class_name, category, e) if whitelist.include? category
       end
     end
     member_docs
@@ -52,9 +55,9 @@ class RubyDocToAnkiConverter
        特殊変数)
   end
 
-  def parse_dl(dl)
+  def build_member_docs(type, class_name, category, dl)
     docs = []
-    doc = RubyDoc.new(type: @type, class_name: @class, category: @cat, expressions: [])
+    doc = RubyDoc.new(type: type, class_name: class_name, category: category, expressions: [])
     dl.children.each do |d|
       d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
       case d.name
