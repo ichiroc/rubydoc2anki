@@ -79,7 +79,7 @@ class RubyDocToAnkiConverter
     URI.join(mech.page.uri, uri)
   end
 
-  def write_out docs
+  def write_out(docs)
     CSV.open(@path, 'w') do |csv|
       docs.each do |d|
         csv << d.to_a
@@ -90,5 +90,4 @@ class RubyDocToAnkiConverter
   def mech
     @_mech ||= Mechanize.new
   end
-
 end
