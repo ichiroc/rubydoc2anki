@@ -4,9 +4,9 @@ require 'mechanize'
 require 'csv'
 require 'uri'
 require 'digest/md5'
-require_relative 'ruby_doc'
+require_relative 'ruby_member_doc'
 
-class RubyDocToAnkiConverter
+class RubyDocGenerator
   def initialize(path)
     @path = path
   end
@@ -79,10 +79,10 @@ class RubyDocToAnkiConverter
 
   def whitelist
     %w(特異メソッド
-       インスタンスメソッド
-       privateメソッド
-       モジュール関数
-       特殊変数)
+      インスタンスメソッド
+      privateメソッド
+      モジュール関数
+      特殊変数)
   end
 
   def mech
