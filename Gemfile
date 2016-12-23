@@ -2,3 +2,5 @@
 source "https://rubygems.org"
 
 gem 'mechanize'
+gem 'rouge'
+gem 'nokogiri'

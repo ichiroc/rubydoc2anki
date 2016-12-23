@@ -19,6 +19,7 @@ class RubyDocGenerator
   private
 
   def write_out(docs)
+    puts "Writing out #{docs.size} documents."
     CSV.open(@path, 'w') do |csv|
       docs.each do |d|
         csv << d.to_a
@@ -67,6 +68,7 @@ class RubyDocGenerator
         if d.text.strip != ''
           doc.description = d.inner_html.strip
           docs << doc
+          doc = RubyMemberDoc.new(class_type: class_type, class_name: class_name, member_type: member_type, expressions: [])
         end
       end
     end
