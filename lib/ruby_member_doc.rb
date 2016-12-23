@@ -10,11 +10,14 @@ class RubyMemberDoc
     @description = description
   end
 
+  def to_a
+    [uri, class_type, class_name, member_type, htmlized_expressions, description]
+  end
+
+  private
+
   def htmlized_expressions
     "<ul><li>#{@expressions.join('</li><li>')}</li></ul>"
   end
 
-  def to_a
-    [uri, class_type, class_name, member_type, htmlized_expressions, description]
-  end
 end
