@@ -55,7 +55,7 @@ class RubyDocGenerator
 
   def extract_member_docs(class_type, class_name, member_type, dl)
     docs = []
-    doc = RubyDoc.new(class_type: class_type, class_name: class_name, member_type: member_type, expressions: [])
+    doc = RubyMemberDoc.new(class_type: class_type, class_name: class_name, member_type: member_type, expressions: [])
     dl.children.each do |d|
       d.css('a').each { |a| a[:href] = absolute_uri(a[:href]) }
       case d.name

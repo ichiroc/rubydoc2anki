@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RubyDoc
+class RubyMemberDoc
   attr_accessor :uri, :class_type, :class_name, :member_type, :expressions, :description
   def initialize(uri: nil, class_type: nil, class_name: nil, member_type: nil, expressions: nil, description: nil)
     @uri = uri
