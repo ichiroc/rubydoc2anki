@@ -3,18 +3,32 @@ require 'nokogiri'
 require 'rouge'
 
 class RubyMemberDoc
-  attr_accessor :uri, :class_type, :class_name, :member_type, :expressions, :description
-  def initialize(uri: nil, class_type: nil, class_name: nil, member_type: nil, expressions: nil, description: nil)
-    @uri = uri
-    @class_type = class_type
-    @class_name = class_name
-    @member_type = member_type
-    @expressions = expressions
-    @description = description
+  attr_accessor :uri,
+                :class_type,
+                :class_name,
+                :member_type,
+                :expressions,
+                :description
+
+  def initialize(args)
+    args ||= {}
+    @uri         = args[:uri]
+    @class_type  = args[:class_type]
+    @class_name  = args[:class_name]
+    @member_type = args[:member_type]
+    @expressions = args[:expressions]
+    @description = args[:description]
   end
 
   def to_a
-    [uri, class_type, class_name, member_type, htmlized_expressions, syntax_highlighted_description]
+    [
+      uri,
+      class_type,
+      class_name,
+      member_type,
+      htmlized_expressions,
+      syntax_highlighted_description
+    ]
   end
 
   private
