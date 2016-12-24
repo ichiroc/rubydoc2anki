@@ -14,7 +14,7 @@ class RubyMemberDoc
   end
 
   def to_a
-    [uri, class_type, class_name, member_type, htmlized_expressions, description]
+    [uri, class_type, class_name, member_type, htmlized_expressions, syntax_highlighted_description]
   end
 
   private
@@ -23,12 +23,12 @@ class RubyMemberDoc
     "<ul><li>#{@expressions.join('</li><li>')}</li></ul>"
   end
 
-  def description
+  def syntax_highlighted_description
     unless @_did_syntax_highlighted_desc
       d = Nokogiri::HTML.parse(@description)
-      d.css('pre').each { |e|
+      d.css('pre').each do |e|
         e.inner_html = do_syntax_highlight(e.inner_text)
-      }
+      end
       @_did_syntax_highlighted_desc = d.to_html
     end
     @_did_syntax_highlighted_desc
