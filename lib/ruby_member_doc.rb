@@ -9,7 +9,10 @@ class RubyMemberDoc
                 :member_type,
                 :expressions,
                 :description
+<<<<<<< HEAD
 
+=======
+>>>>>>> 01895151310bafcf56f54cc6c982429e9e83dbca
   def initialize(args)
     args ||= {}
     @uri         = args[:uri]
