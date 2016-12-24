@@ -20,8 +20,7 @@ class RubyMemberDoc
   private
 
   def htmlized_expressions
-    exps = @expressions.map { |e| do_syntax_highlight(e) }
-    "<ul><li>#{exps.join('</li><li>')}</li></ul>"
+    "<ul><li>#{@expressions.join('</li><li>')}</li></ul>"
   end
 
   def description
